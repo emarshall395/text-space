@@ -1,18 +1,20 @@
-// src/models/Message.ts
-import mongoose, { Document, Schema } from 'mongoose';
+// src/routes/messageRoutes.ts
+import express from 'express';
+import {
+  getAllMessages,
+  createMessage,
+  getMessageById,
+  updateMessage,
+  deleteMessage,
+} from '../controllers/messageController';
  
-export interface IMessage extends Document {
-  sender: string;
-  receiver: string;
-  content: string;
-  timestamp: Date;
-}
+const router = express.Router();
  
-const messageSchema: Schema = new Schema({
-  sender: { type: String, required: true },
-  receiver: { type: String, required: true },
-  content: { type: String, required: true },
-  timestamp: { type: Date, default: Date.now },
-});
+router.get('/messages', getAllMessages);
+router.post('/messages', createMessage);
+router.get('/messages/:id', getMessageById);
+router.put('/messages/:id', updateMessage);
+router.patch('/messages/:id', updateMessage); // Partial update
+router.delete('/messages/:id', deleteMessage);
  
-export default mongoose.model<IMessage>('Message', messageSchema);
+export default router;
