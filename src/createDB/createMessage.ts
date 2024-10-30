@@ -1,9 +1,9 @@
 // createDB/createMessage.ts
 
-// Step 1: Connect to the 'admin' database
+// Connect to the 'admin' database
 db = db.getSiblingDB('admin');
 
-// Step 2: Create an admin user with roles for broad permissions
+// Create an admin user with roles for broad permissions
 db.createUser({
   user: "dbAdmin",
   pwd: "test",
@@ -14,13 +14,13 @@ db.createUser({
   ]
 });
 
-// Step 3: Switch to 'messagesDB' to define the 'messages' collection
+// Switch to 'messagesDB' to define the 'messages' collection
 db = db.getSiblingDB('messagesDB');
 
-// Step 4: Create the 'messages' collection if it doesn’t exist
+// Create the 'messages' collection if it doesn’t exist
 db.createCollection('messages');
 
-// Step 5: Insert a sample message document according to messageSchema
+// Insert a sample message document according to messageSchema
 db.messages.insertOne({
   senderID: "user123",
   receiverID: "user456",
