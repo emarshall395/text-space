@@ -3,6 +3,8 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import messageRoutes from './routes/messageRoutes'; 
+import { App } from './App';
+
 
 const PORT = process.env.PORT || 5000;
 const app = express();
