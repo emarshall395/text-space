@@ -2,6 +2,7 @@
 import mongoose, { Document, Schema } from 'mongoose';
  
 export interface IGroup extends Document {
+  groupID: string;
   senderID: string;
   chatMembers: [string];
   content: [string];
@@ -9,6 +10,7 @@ export interface IGroup extends Document {
 }
  
 const groupSchema: Schema = new Schema({
+  groupID: { type: String, required: true},
   senderID: { type: String, required: true },
   chatMembers: { type: [String], required: true },
   content: { type: [String], required: true },
