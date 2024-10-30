@@ -1,7 +1,7 @@
 // src/controllers/messageController.ts
 import { Request, Response } from 'express';
 import Message, { IMessage } from '../models/Message';
- 
+
 // Get all messages
 export const getAllMessages = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -12,13 +12,13 @@ export const getAllMessages = async (req: Request, res: Response): Promise<void>
     res.status(500).json({ error: "Failed to retrieve messages." });
   }
 };
- 
+
 // Create a new message from sender to receiver
 export const createMessage = async (req: Request, res: Response): Promise<void> => {
-  const { senderID, receiverID, content } = req.body;
- 
+  const { senderID, receiverID, messageID, content } = req.body;
+
   try {
-    const newMessage: IMessage = new Message({ senderID, receiverID, content });
+    const newMessage: IMessage = new Message({ senderID, receiverID, messageID, content });
     const savedMessage = await newMessage.save();
     res.status(201).json(savedMessage);
   } catch (err) {
@@ -31,11 +31,13 @@ export const createMessage = async (req: Request, res: Response): Promise<void> 
     }
   }
 };
- 
-// Get a specific message by ID
-export const getMessageById = async (req: Request, res: Response): Promise<void> => {
+
+// Get a specific message by senderID and messageID
+export const getMessageBySenderAndId = async (req: Request, res: Response): Promise<void> => {
+  const { senderID, messageID } = req.params;
+
   try {
-    const message = await Message.findById(req.params.id);
+    const message = await Message.findOne({ senderID, messageID });
     if (message) {
       res.status(200).json(message);
     } else {
@@ -51,14 +53,18 @@ export const getMessageById = async (req: Request, res: Response): Promise<void>
     }
   }
 };
- 
-// Update a message by ID
+
+// Update a specific message using senderID, receiverID, and messageID
 export const updateMessage = async (req: Request, res: Response): Promise<void> => {
+  const { senderID, receiverID, messageID } = req.params;
+  const { content } = req.body;
+
   try {
-    const updatedMessage = await Message.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const updatedMessage = await Message.findOneAndUpdate(
+      { senderID, receiverID, messageID },
+      { content }, // Only updating the content; modify as needed
+      { new: true, runValidators: true }
+    );
     if (updatedMessage) {
       res.status(200).json(updatedMessage);
     } else {
@@ -74,11 +80,13 @@ export const updateMessage = async (req: Request, res: Response): Promise<void> 
     }
   }
 };
- 
-// Delete a message by ID
+
+// Delete a specific message using senderID, receiverID, and messageID
 export const deleteMessage = async (req: Request, res: Response): Promise<void> => {
+  const { senderID, receiverID, messageID } = req.params;
+
   try {
-    const deletedMessage = await Message.findByIdAndDelete(req.params.id);
+    const deletedMessage = await Message.findOneAndDelete({ senderID, receiverID, messageID });
     if (deletedMessage) {
       res.status(200).json({ message: 'Message deleted' });
     } else {
@@ -94,11 +102,11 @@ export const deleteMessage = async (req: Request, res: Response): Promise<void> 
     }
   }
 };
- 
+
 // Get messages by sender and receiver IDs
 export const getMessagesBySenderAndReceiver = async (req: Request, res: Response): Promise<void> => {
   const { senderID, receiverID } = req.params;
- 
+
   try {
     const messages = await Message.find({
       $or: [
@@ -106,29 +114,29 @@ export const getMessagesBySenderAndReceiver = async (req: Request, res: Response
         { senderID: receiverID, receiverID: senderID }
       ]
     });
- 
+
     if (messages.length === 0) {
       return res.status(404).json({ message: 'No messages found for this sender and receiver combination' });
     }
- 
+
     res.status(200).json(messages);
   } catch (err) {
     console.error("Error retrieving messages:", err);
     res.status(500).json({ error: "Failed to retrieve messages." });
   }
 };
- 
+
 // Get messages received by a specific receiver ID
 export const getMessagesForReceiver = async (req: Request, res: Response): Promise<void> => {
   const { receiverID } = req.params;
- 
+
   try {
     const messages = await Message.find({ receiverID });
- 
+
     if (messages.length === 0) {
       return res.status(404).json({ message: 'No messages found for this receiver' });
     }
- 
+
     res.status(200).json(messages);
   } catch (err) {
     console.error("Error retrieving messages for receiver:", err);
