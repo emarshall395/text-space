@@ -2,17 +2,17 @@
 import mongoose, { Document, Schema } from 'mongoose';
  
 export interface IMessage extends Document {
-  senderID: string;  // Add senderID field
-  receiverID: string;  // Add receiverID field
+  senderID: string;
+  receiverID: string;
   content: string;
-  timestamp: Date;
+  createdAt: Date;
 }
  
-const MessageSchema: Schema = new Schema({
-  senderID: { type: String, required: true },  // Ensure senderID is required
-  receiverID: { type: String, required: true },  // Ensure receiverID is required
+const messageSchema: Schema = new Schema({
+  senderID: { type: String, required: true },
+  receiverID: { type: String, required: true },
   content: { type: String, required: true },
-  timestamp: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
 });
  
-export default mongoose.model<IMessage>('Message', MessageSchema);
+export default mongoose.model<IMessage>('Message', messageSchema);
