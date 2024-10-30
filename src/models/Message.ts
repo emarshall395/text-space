@@ -11,6 +11,7 @@ export interface IMessage extends Document {
 const messageSchema: Schema = new Schema({
   senderID: { type: String, required: true },
   receiverID: { type: String, required: true },
+  messageID: { type: String, required: true },
   content: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
 });
