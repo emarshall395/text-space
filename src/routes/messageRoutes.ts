@@ -2,7 +2,6 @@
 import express, { Request, Response, Router } from 'express';
 import bodyParser from 'body-parser';
 import connectDB from '../dbConnect';
-import { Request, Response } from 'express';
 import {
   getAllMessages,
   getMessageBySenderAndId,
