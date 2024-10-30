@@ -1,31 +1,57 @@
 // createDB/createSample.ts
- 
-// Step 1: Switch to the 'toDoSample' database
-db = db.getSiblingDB('toDoSample');
- 
-// --- Messages Collection Setup ---
-db.createCollection('messages');
-const messagesCollection = db.getCollection('messages');
-messagesCollection.remove({}); // Clear any existing documents
- 
-// Insert sample message documents according to messageSchema
-messagesCollection.insertMany([
-  {
-    senderID: "user123",
-    receiverID: "user456",
-    content: "Hey, just checking in!",
-    createdAt: new Date()  // Follows messageSchema requirement
-  },
-  {
-    senderID: "user456",
-    receiverID: "user123",
-    content: "Hello! I'm doing well, thanks for asking.",
-    createdAt: new Date()
-  },
-  {
-    senderID: "user789",
-    receiverID: "user123",
-    content: "Are you free to catch up tomorrow?",
-    createdAt: new Date()
+import mongoose from 'mongoose';
+import connectDB from '../dbConnect'; // Import the connection module
+
+// Connect to the 'messagesDB' database
+const createSampleMessages = async () => {
+  await connectDB(); // Connect to MongoDB
+
+  // Define the Message schema
+  const messageSchema = new mongoose.Schema({
+    senderID: { type: String, required: true },
+    receiverID: { type: String, required: true },
+    messageID: { type: String, required: true },
+    content: { type: String, required: true },
+    createdAt: { type: Date, default: Date.now },
+  });
+
+  // Create the Message model
+  const Message = mongoose.model('Message', messageSchema);
+
+  try {
+    await Message.deleteMany({}); // Clear any existing documents
+
+    const messages = [
+      {
+        senderID: 'user123',
+        receiverID: 'user456',
+        messageID: 'msg002', // Use a unique messageID
+        content: 'Hey, just checking in!',
+        createdAt: new Date(),
+      },
+      {
+        senderID: 'user456',
+        receiverID: 'user123',
+        messageID: 'msg003',
+        content: "Hello! I'm doing well, thanks for asking.",
+        createdAt: new Date(),
+      },
+      {
+        senderID: 'user789',
+        receiverID: 'user123',
+        messageID: 'msg004',
+        content: 'Are you free to catch up tomorrow?',
+        createdAt: new Date(),
+      },
+    ];
+
+    const savedMessages = await Message.insertMany(messages);
+    console.log('Sample messages created:', savedMessages);
+  } catch (error) {
+    console.error('Error creating sample messages:', error);
+  } finally {
+    mongoose.connection.close(); // Close the connection
   }
-]);
+};
+
+createSampleMessages();
