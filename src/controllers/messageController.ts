@@ -2,10 +2,22 @@
 import { Request, Response } from 'express';
 import Message, { IMessage } from '../models/Message';
 
-// Get all messages
+// Get all messages with optional senderID and receiverID
 export const getAllMessages = async (req: Request, res: Response): Promise<void> => {
+  const { senderID, receiverID } = req.query;
+
   try {
-    const messages = await Message.find();
+    const filter: { senderID?: string; receiverID?: string } = {};
+
+    if (senderID) {
+      filter.senderID = senderID as string;
+    }
+
+    if (receiverID) {
+      filter.receiverID = receiverID as string;
+    }
+
+    const messages = await Message.find(filter);
     res.status(200).json(messages);
   } catch (err) {
     console.error("Error retrieving messages:", err);
@@ -16,6 +28,11 @@ export const getAllMessages = async (req: Request, res: Response): Promise<void>
 // Create a new message from sender to receiver
 export const createMessage = async (req: Request, res: Response): Promise<void> => {
   const { senderID, receiverID, messageID, content } = req.body;
+
+  // Ensure all required fields are present
+  if (!senderID || !receiverID || !content) {
+    return res.status(400).json({ error: "All fields are required: senderID, receiverID, content." });
+  }
 
   try {
     const newMessage: IMessage = new Message({ senderID, receiverID, messageID, content });
@@ -143,3 +160,4 @@ export const getMessagesForReceiver = async (req: Request, res: Response): Promi
     res.status(500).json({ error: "Failed to retrieve messages for receiver." });
   }
 };
+
