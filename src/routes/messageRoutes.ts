@@ -25,14 +25,14 @@ messageApp.use(bodyParser.json());
 messageApp.use(bodyParser.urlencoded({ extended: false }));
 
 // CORS setup
-messageApp.use((req: Request, res: Response, next) => {
+messageApp.use((req: express.Request, res: express.Response, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
 
 // Create a new message route
-router.post('/', async (req: Request, res: Response) => {
+router.post('/', async (req: express.Request, res: express.Response) => {
   const { senderID, receiverID, content } = req.body;
 
   // Validate input
@@ -49,7 +49,7 @@ router.post('/', async (req: Request, res: Response) => {
 });
 
 // Get all messages with senderID and receiverID as query parameters
-router.get('/', async (req: Request, res: Response) => {
+router.get('/', async (req: express.Request, res: express.Response) => {
   const { senderID, receiverID } = req.query;
 
   // Validate input
@@ -66,7 +66,7 @@ router.get('/', async (req: Request, res: Response) => {
 });
 
 // Get a message by senderID and messageID
-router.get('/sender/:senderID/message/:messageID', async (req: Request, res: Response) => {
+router.get('/sender/:senderID/message/:messageID', async (req: express.Request, res: express.Response) => {
   try {
     await getMessageBySenderAndId(req, res);
   } catch (error) {
@@ -76,7 +76,7 @@ router.get('/sender/:senderID/message/:messageID', async (req: Request, res: Res
 });
 
 // Update message by senderID, receiverID, and messageID
-router.put('/sender/:senderID/receiver/:receiverID/message/:messageID', async (req: Request, res: Response) => {
+router.put('/sender/:senderID/receiver/:receiverID/message/:messageID', async (req: express.Request, res: express.Response) => {
   try {
     await updateMessage(req, res);
   } catch (error) {
@@ -86,7 +86,7 @@ router.put('/sender/:senderID/receiver/:receiverID/message/:messageID', async (r
 });
 
 // Delete message by senderID, receiverID, and messageID
-router.delete('/sender/:senderID/receiver/:receiverID/message/:messageID', async (req: Request, res: Response) => {
+router.delete('/sender/:senderID/receiver/:receiverID/message/:messageID', async (req: express.Request, res: express.Response) => {
   try {
     await deleteMessage(req, res);
   } catch (error) {
@@ -96,7 +96,7 @@ router.delete('/sender/:senderID/receiver/:receiverID/message/:messageID', async
 });
 
 // Get messages by sender and receiver
-router.get('/sender/:senderID/receiver/:receiverID', async (req: Request, res: Response) => {
+router.get('/sender/:senderID/receiver/:receiverID', async (req: express.Request, res: express.Response) => {
   try {
     await getMessagesBySenderAndReceiver(req, res);
   } catch (error) {
@@ -106,7 +106,7 @@ router.get('/sender/:senderID/receiver/:receiverID', async (req: Request, res: R
 });
 
 // Get messages for a specific receiver
-router.get('/receiver/:receiverID', async (req: Request, res: Response) => {
+router.get('/receiver/:receiverID', async (req: express.Request, res: express.Response) => {
   try {
     await getMessagesForReceiver(req, res);
   } catch (error) {
