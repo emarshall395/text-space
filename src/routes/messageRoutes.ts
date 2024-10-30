@@ -50,6 +50,11 @@ router.post('/', async (req: express.Request, res: express.Response) => {
 
 // Get all messages with senderID and receiverID as query parameters
 router.get('/', async (req: express.Request, res: express.Response) => {
+  try {
+    res.status(200).send('Hello World');
+  } catch (error) {
+    res.status(500).send('Server Error');
+  }
   const { senderID, receiverID } = req.query;
 
   // Validate input
