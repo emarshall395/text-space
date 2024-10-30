@@ -4,7 +4,7 @@ import bodyParser from 'body-parser';
 import connectDB from '../dbConnect';
 import {
   getAllMessages,
-  getMessageById,
+  getMessageBySenderAndId,
   createMessage,
   updateMessage,
   deleteMessage,
@@ -14,17 +14,18 @@ import {
 import Message from '../models/Message'; // Import the Message model
 
 // Initialize Express application and router
+const messageApp = express();
 const router = Router();
 
 // Connect to MongoDB
 connectDB();
 
 // Middleware configuration 
-router.use(bodyParser.json());
-router.use(bodyParser.urlencoded({ extended: false }));
+messageApp.use(bodyParser.json());
+messageApp.use(bodyParser.urlencoded({ extended: false }));
 
 // CORS setup
-router.use((req: Request, res: Response, next) => {
+messageApp.use((req: Request, res: Response, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
@@ -32,7 +33,7 @@ router.use((req: Request, res: Response, next) => {
 
 // Create a new message route
 router.post('/', async (req: Request, res: Response) => {
-  const { senderID, receiverID, content } = req.body; // Destructure variables from request body
+  const { senderID, receiverID, content } = req.body;
 
   // Validate input
   if (!senderID || !receiverID || !content) {
@@ -40,67 +41,54 @@ router.post('/', async (req: Request, res: Response) => {
   }
 
   try {
-    const newMessage = await createMessage(req); // Call controller function
-    res.status(201).json(newMessage); // Respond with created message
+    await createMessage(req, res);
   } catch (error) {
     console.error('Error creating message:', error);
     res.status(500).json({ error: 'Failed to create message.' });
   }
 });
 
-// Get all messages
+// Get all messages with senderID and receiverID as query parameters
 router.get('/', async (req: Request, res: Response) => {
+  const { senderID, receiverID } = req.query;
+
+  // Validate input
+  if (!senderID || !receiverID) {
+    return res.status(400).json({ error: "Both senderID and receiverID are required." });
+  }
+
   try {
-    const messages = await getAllMessages(req, res); // Call controller function
-    res.status(200).json(messages);
+    await getAllMessages(req, res, senderID as string, receiverID as string);
   } catch (error) {
     console.error('Error fetching messages:', error);
     res.status(500).json({ error: 'Failed to fetch messages.' });
   }
 });
 
-// Get message by ID
-router.get('/:id', async (req: Request, res: Response) => {
-  const { id } = req.params;
+// Get a message by senderID and messageID
+router.get('/sender/:senderID/message/:messageID', async (req: Request, res: Response) => {
   try {
-    const message = await getMessageById(req, res); // Call controller function
-    if (!message) {
-      return res.status(404).json({ error: 'Message not found.' });
-    }
-    res.status(200).json(message);
+    await getMessageBySenderAndId(req, res);
   } catch (error) {
-    console.error('Error fetching message:', error);
+    console.error('Error fetching message by sender and ID:', error);
     res.status(500).json({ error: 'Failed to fetch message.' });
   }
 });
 
-// Update message by ID
-router.put('/:id', async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { senderID, receiverID, content } = req.body;
-
+// Update message by senderID, receiverID, and messageID
+router.put('/sender/:senderID/receiver/:receiverID/message/:messageID', async (req: Request, res: Response) => {
   try {
-    const updatedMessage = await updateMessage(id, { senderID, receiverID, content }); // Call your controller function
-    if (!updatedMessage) {
-      return res.status(404).json({ error: 'Message not found.' });
-    }
-    res.status(200).json(updatedMessage);
+    await updateMessage(req, res);
   } catch (error) {
     console.error('Error updating message:', error);
     res.status(500).json({ error: 'Failed to update message.' });
   }
 });
 
-// Delete message by ID
-router.delete('/:id', async (req: Request, res: Response) => {
-  const { id } = req.params;
-
+// Delete message by senderID, receiverID, and messageID
+router.delete('/sender/:senderID/receiver/:receiverID/message/:messageID', async (req: Request, res: Response) => {
   try {
-    const result = await deleteMessage(id); // Call your controller function
-    if (!result) {
-      return res.status(404).json({ error: 'Message not found.' });
-    }
-    res.status(204).send(); // No content response for successful delete
+    await deleteMessage(req, res);
   } catch (error) {
     console.error('Error deleting message:', error);
     res.status(500).json({ error: 'Failed to delete message.' });
@@ -109,11 +97,8 @@ router.delete('/:id', async (req: Request, res: Response) => {
 
 // Get messages by sender and receiver
 router.get('/sender/:senderID/receiver/:receiverID', async (req: Request, res: Response) => {
-  const { senderID, receiverID } = req.params;
-
   try {
-    const messages = await getMessagesBySenderAndReceiver(req, res); // 
-    res.status(200).json(messages);
+    await getMessagesBySenderAndReceiver(req, res);
   } catch (error) {
     console.error('Error fetching messages by sender and receiver:', error);
     res.status(500).json({ error: 'Failed to fetch messages.' });
@@ -122,16 +107,16 @@ router.get('/sender/:senderID/receiver/:receiverID', async (req: Request, res: R
 
 // Get messages for a specific receiver
 router.get('/receiver/:receiverID', async (req: Request, res: Response) => {
-  const { receiverID } = req.params;
-
   try {
-    const messages = await getMessagesForReceiver(req, res); // 
-    res.status(200).json(messages);
+    await getMessagesForReceiver(req, res);
   } catch (error) {
     console.error('Error fetching messages for receiver:', error);
-    res.status(500).json({ error: 'Failed to fetch messages.' });
+    res.status(500).json({ error: 'Failed to fetch messages for receiver.' });
   }
 });
 
-export default router; // Export the router to use in your app
+messageApp.use('/api/messages', router);
+
+export default messageApp;
+
 
