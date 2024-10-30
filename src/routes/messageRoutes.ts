@@ -58,7 +58,7 @@ router.get('/', async (req: Request, res: Response) => {
   }
 
   try {
-    await getAllMessages(req, res, senderID as string, receiverID as string);
+    await getAllMessages(req, res);
   } catch (error) {
     console.error('Error fetching messages:', error);
     res.status(500).json({ error: 'Failed to fetch messages.' });
