@@ -1,5 +1,5 @@
 // src/routes/messageRoutes.ts
-import express, { Request, Response, Router } from 'express';
+import { Request, Response, Router } from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import connectDB from '../dbConnect';
