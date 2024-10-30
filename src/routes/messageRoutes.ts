@@ -1,6 +1,7 @@
 // src/routes/messageRoutes.ts
 import express, { Request, Response, Router } from 'express';
 import bodyParser from 'body-parser';
+import cors from 'cors';
 import connectDB from '../dbConnect';
 import {
   getAllMessages,
@@ -23,6 +24,9 @@ connectDB();
 // Middleware configuration 
 messageApp.use(bodyParser.json());
 messageApp.use(bodyParser.urlencoded({ extended: false }));
+
+// CORS setup
+messageApp.use(cors()); // Added CORS middleware
 
 // CORS setup
 messageApp.use((req: Request, res: Response, next) => {
@@ -50,13 +54,8 @@ router.post('/', async (req: Request, res: Response) => {
 
 // Get all messages with senderID and receiverID as query parameters
 router.get('/', async (req: Request, res: Response) => {
-  try {
-    res.status(200).send('Hello World');
-  } catch (error) {
-    res.status(500).send('Server Error');
-  }
   const { senderID, receiverID } = req.query;
-
+  
   // Validate input
   if (!senderID || !receiverID) {
     return res.status(400).json({ error: "Both senderID and receiverID are required." });
