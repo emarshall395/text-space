@@ -6,7 +6,9 @@
     "moduleResolution": "node",
     "rootDir": "./",
     "sourceMap": true,
+    "strict": true,
     "esModuleInterop": true,
+    "skipLibCheck": true
     "types": ["node"],
     "typeRoots": [
       "node_modules/@types"
