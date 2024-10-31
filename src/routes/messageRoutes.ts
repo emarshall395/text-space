@@ -65,7 +65,8 @@ router.get('/', async (req: Request, res: Response) => {
   
   // Validate input
   if (!senderID || !receiverID) {
-    return res.status(400).json({ error: "Both senderID and receiverID are required." });
+     res.status(400).json({ error: "Both senderID and receiverID are required." });
+     return;
   }
 
   try {
