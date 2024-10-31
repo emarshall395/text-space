@@ -1,8 +1,8 @@
 // src/routes/messageRoutes.ts
-import { Request, Response, Router } from 'express';
+import express, { Request, Response, Router } from 'express';
 import bodyParser from 'body-parser';
-import cors from 'cors';
 import connectDB from '../dbConnect';
+import cors from 'cors';
 import {
   getAllMessages,
   getMessageBySenderAndId,
@@ -29,11 +29,11 @@ messageApp.use(bodyParser.urlencoded({ extended: false }));
 messageApp.use(cors()); // Added CORS middleware
 
 // CORS setup
-messageApp.use((req: Request, res: Response, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
+//messageApp.use((req: Request, res: Response, next) => {
+ // res.header("Access-Control-Allow-Origin", "*");
+ // res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+ // next();
+//});
 
 // Create a new message route
 router.post('/', async (req: Request, res: Response) => {
@@ -54,6 +54,12 @@ router.post('/', async (req: Request, res: Response) => {
 
 // Get all messages with senderID and receiverID as query parameters
 router.get('/', async (req: Request, res: Response) => {
+   try {
+    res.status(200).send('Hello World');
+  } catch (error) {
+    res.status(500).send('Server Error');
+  }
+
   const { senderID, receiverID } = req.query;
   
   // Validate input
