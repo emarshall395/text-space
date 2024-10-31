@@ -1,3 +1,5 @@
+// Start the Express server that will listen for incoming HTTP 
+// requests and route them to the appropriate controllers and database operations
 // src/server.ts
 import messageApp from './routes/messageRoutes';
 import * as dotenv from 'dotenv';
