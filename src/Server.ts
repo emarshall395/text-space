@@ -3,9 +3,13 @@
 import messageApp from './routes/messageRoutes';
 import * as dotenv from 'dotenv';
 import connectDB from './dbConnect';
+import express from 'express';
 import app from './App.ts';
 
+const serverApp = express();
 const app = express();
+
+serverApp.use(express.json());
 
 // Middleware
 app.use(express.json());
