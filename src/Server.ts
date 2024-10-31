@@ -1,8 +1,17 @@
 
 // src/server.ts
+import messageApp from './routes/messageRoutes';
 import * as dotenv from 'dotenv';
 import connectDB from './dbConnect';
 import app from './App';
+
+const app = express();
+
+// Middleware
+app.use(express.json());
+
+// Register routes
+app.use('/api/messages', messageApp);
 
 dotenv.config();
 connectDB();
