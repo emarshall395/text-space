@@ -13,7 +13,6 @@ export const getAllMessages = async (req: Request, res: Response): Promise<void>
   }
 };
 
-
 // Create a new message from sender to receiver
 export const createMessage = async (req: Request, res: Response): Promise<void> => {
   const { senderID, receiverID, messageID, content } = req.body;
@@ -132,3 +131,4 @@ export const getMessagesForReceiver = async (req: Request, res: Response): Promi
     res.status(500).json({ error: "Failed to retrieve messages for receiver." });
   }
 };
+
