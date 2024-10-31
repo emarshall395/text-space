@@ -1,3 +1,5 @@
+// Purpose: The purpose of this file is to generate a message 
+// into the database once a connection has been established.
 // createDB/createMessage.ts
 import mongoose from 'mongoose';
 import connectDB from '../dbConnect'; // Import the connection module
@@ -15,10 +17,11 @@ const createMessage = async () => {
     createdAt: { type: Date, default: Date.now },
   });
 
-  // Create the Message model
+  // Create the Message model for messages.
   const Message = mongoose.model('Message', messageSchema);
 
   try {
+    // Follows the same schema of the message.
     const newMessage = new Message({
       senderID: 'user123',
       receiverID: 'user456',
@@ -27,6 +30,7 @@ const createMessage = async () => {
       createdAt: new Date(),
     });
 
+    //Saves the message into the data base.
     const savedMessage = await newMessage.save();
     console.log('Message created:', savedMessage);
   } catch (error) {
