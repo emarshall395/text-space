@@ -1,6 +1,6 @@
 // The purpose of this file is to set up and configure the Express application by enabling 
 // middleware (such as CORS and JSON parsing). Additinally, it defines the route structure for the 
-// application.
+// application. This is a filler used for reference from Professor for server.ts
 // src/App.ts
 import express from 'express';
 import cors from 'cors';
