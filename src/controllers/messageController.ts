@@ -31,7 +31,8 @@ export const createMessage = async (req: Request, res: Response): Promise<void> 
 
   // Ensure all required fields are present
   if (!senderID || !receiverID || !content) {
-    return res.status(400).json({ error: "All fields are required: senderID, receiverID, content." });
+   res.status(400).json({ error: "All fields are required: senderID, receiverID, content." });
+  return;
   }
 
   try {
@@ -133,7 +134,8 @@ export const getMessagesBySenderAndReceiver = async (req: Request, res: Response
     });
 
     if (messages.length === 0) {
-      return res.status(404).json({ message: 'No messages found for this sender and receiver combination' });
+     res.status(404).json({ message: 'No messages found for this sender and receiver combination' });
+     return;
     }
 
     res.status(200).json(messages);
@@ -151,7 +153,8 @@ export const getMessagesForReceiver = async (req: Request, res: Response): Promi
     const messages = await Message.find({ receiverID });
 
     if (messages.length === 0) {
-      return res.status(404).json({ message: 'No messages found for this receiver' });
+       res.status(404).json({ message: 'No messages found for this receiver' });
+       return;
     }
 
     res.status(200).json(messages);
