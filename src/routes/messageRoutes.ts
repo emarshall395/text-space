@@ -1,82 +1,32 @@
 // Purpose: The purpose of this file is that it organizes and defines the specific routes for handling
 // message-related operation. The following file focuses mainly on messaging endpoints.
 // src/routes/messageRoutes.ts
-import express, { Request, Response, Router } from 'express';
+import { Router, Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import connectDB from '../dbConnect';
 import cors from 'cors';
 import {
   getAllMessages,
   getMessageBySenderAndId,
-  createMessage,
   updateMessage,
   deleteMessage,
   getMessagesBySenderAndReceiver,
   getMessagesForReceiver
 } from '../controllers/messageController';
-import Message from '../models/Message'; // Import the Message model
 
 // Initialize Express application and router
-const messageApp = express();
+//const messageApp = express();
 const router = Router();
 
 // Connect to MongoDB
 connectDB();
 
-// Middleware configuration 
-messageApp.use(bodyParser.json());
-messageApp.use(bodyParser.urlencoded({ extended: false }));
-messageApp.use('/api/messages', router);
-
-
-// CORS setup
-messageApp.use(cors()); // Added CORS middleware
-
-// CORS setup
-//messageApp.use((req: Request, res: Response, next) => {
- // res.header("Access-Control-Allow-Origin", "*");
- // res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
- // next();
-//});
-
-// Create a new message route
-router.post('/', async (req: Request, res: Response) => {
-  const { senderID, receiverID, content } = req.body;
-
-  // Validate input
-  if (!senderID || !receiverID || !content) {
-   res.status(400).json({ error: "All fields are required: senderID, receiverID, content." });
-   return;
-  }
-
-  try {
-    await createMessage(req, res);
-  } catch (error) {
-    console.error('Error creating message:', error);
-    res.status(500).json({ error: 'Failed to create message.' });
-  }
-});
-
-// Get all messages with senderID and receiverID as query parameters
+// Get all messages
 router.get('/', async (req: Request, res: Response) => {
-   try {
-    res.status(200).send('Hello World');
-  } catch (error) {
-    res.status(500).send('Server Error');
-  }
-
-  const { senderID, receiverID } = req.query;
-  
-  // Validate input
-  if (!senderID || !receiverID) {
-     res.status(400).json({ error: "Both senderID and receiverID are required." });
-     return;
-  }
-
   try {
-    await getAllMessages(req, res);
+    await getAllMessages(req, res); // Call the controller function to get all messages
   } catch (error) {
-    console.error('Error fetching messages:', error);
+    console.error('Error fetching all messages:', error);
     res.status(500).json({ error: 'Failed to fetch messages.' });
   }
 });
@@ -131,8 +81,4 @@ router.get('/receiver/:receiverID', async (req: Request, res: Response) => {
   }
 });
 
-messageApp.use('/api/messages', router);
-
-export default messageApp;
-
-
+export default router;
