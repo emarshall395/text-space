@@ -4,20 +4,8 @@ import Message, { IMessage } from '../models/Message';
 
 // Get all messages with optional senderID and receiverID
 export const getAllMessages = async (req: Request, res: Response): Promise<void> => {
-  const { senderID, receiverID } = req.query;
-
   try {
-    const filter: { senderID?: string; receiverID?: string } = {};
-
-    if (senderID) {
-      filter.senderID = senderID as string;
-    }
-
-    if (receiverID) {
-      filter.receiverID = receiverID as string;
-    }
-
-    const messages = await Message.find(filter);
+    const messages = await Message.find(); // Fetch all messages
     res.status(200).json(messages);
   } catch (err) {
     console.error("Error retrieving messages:", err);
@@ -25,14 +13,15 @@ export const getAllMessages = async (req: Request, res: Response): Promise<void>
   }
 };
 
+
 // Create a new message from sender to receiver
 export const createMessage = async (req: Request, res: Response): Promise<void> => {
   const { senderID, receiverID, messageID, content } = req.body;
 
   // Ensure all required fields are present
   if (!senderID || !receiverID || !content) {
-   res.status(400).json({ error: "All fields are required: senderID, receiverID, content." });
-  return;
+    res.status(400).json({ error: "All fields are required: senderID, receiverID, content." });
+    return;
   }
 
   try {
@@ -40,13 +29,8 @@ export const createMessage = async (req: Request, res: Response): Promise<void> 
     const savedMessage = await newMessage.save();
     res.status(201).json(savedMessage);
   } catch (err) {
-    if (err instanceof Error) {
-      console.error("Error saving message:", err);
-      res.status(500).json({ error: err.message });
-    } else {
-      console.error("Unknown error occurred:", err);
-      res.status(500).json({ error: "An unknown error occurred." });
-    }
+    console.error("Error saving message:", err);
+    res.status(500).json({ error: "Failed to create message." });
   }
 };
 
@@ -62,13 +46,8 @@ export const getMessageBySenderAndId = async (req: Request, res: Response): Prom
       res.status(404).json({ message: 'Message not found' });
     }
   } catch (err) {
-    if (err instanceof Error) {
-      console.error("Error finding message:", err);
-      res.status(500).json({ error: err.message });
-    } else {
-      console.error("Unknown error:", err);
-      res.status(500).json({ error: "An unknown error occurred." });
-    }
+    console.error("Error finding message:", err);
+    res.status(500).json({ error: "Failed to retrieve message." });
   }
 };
 
@@ -89,13 +68,8 @@ export const updateMessage = async (req: Request, res: Response): Promise<void> 
       res.status(404).json({ message: 'Message not found' });
     }
   } catch (err) {
-    if (err instanceof Error) {
-      console.error("Error updating message:", err);
-      res.status(500).json({ error: err.message });
-    } else {
-      console.error("Unknown error:", err);
-      res.status(500).json({ error: "An unknown error occurred." });
-    }
+    console.error("Error updating message:", err);
+    res.status(500).json({ error: "Failed to update message." });
   }
 };
 
@@ -111,13 +85,8 @@ export const deleteMessage = async (req: Request, res: Response): Promise<void> 
       res.status(404).json({ message: 'Message not found' });
     }
   } catch (err) {
-    if (err instanceof Error) {
-      console.error("Error deleting message:", err);
-      res.status(500).json({ error: err.message });
-    } else {
-      console.error("Unknown error:", err);
-      res.status(500).json({ error: "An unknown error occurred." });
-    }
+    console.error("Error deleting message:", err);
+    res.status(500).json({ error: "Failed to delete message." });
   }
 };
 
@@ -129,13 +98,13 @@ export const getMessagesBySenderAndReceiver = async (req: Request, res: Response
     const messages = await Message.find({
       $or: [
         { senderID, receiverID },
-        { senderID: receiverID, receiverID: senderID }
-      ]
+        { senderID: receiverID, receiverID: senderID },
+      ],
     });
 
     if (messages.length === 0) {
-     res.status(404).json({ message: 'No messages found for this sender and receiver combination' });
-     return;
+      res.status(404).json({ message: 'No messages found for this sender and receiver combination' });
+      return;
     }
 
     res.status(200).json(messages);
@@ -153,8 +122,8 @@ export const getMessagesForReceiver = async (req: Request, res: Response): Promi
     const messages = await Message.find({ receiverID });
 
     if (messages.length === 0) {
-       res.status(404).json({ message: 'No messages found for this receiver' });
-       return;
+      res.status(404).json({ message: 'No messages found for this receiver' });
+      return;
     }
 
     res.status(200).json(messages);
@@ -163,4 +132,3 @@ export const getMessagesForReceiver = async (req: Request, res: Response): Promi
     res.status(500).json({ error: "Failed to retrieve messages for receiver." });
   }
 };
-
