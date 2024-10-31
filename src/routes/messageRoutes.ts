@@ -41,7 +41,8 @@ router.post('/', async (req: Request, res: Response) => {
 
   // Validate input
   if (!senderID || !receiverID || !content) {
-    return res.status(400).json({ error: "All fields are required: senderID, receiverID, content." });
+   res.status(400).json({ error: "All fields are required: senderID, receiverID, content." });
+   return;
   }
 
   try {
