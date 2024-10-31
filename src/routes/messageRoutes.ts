@@ -1,12 +1,9 @@
-// Purpose: The purpose of this file is that it organizes and defines the specific routes for handling
-// message-related operation. The following file focuses mainly on messaging endpoints.
 // src/routes/messageRoutes.ts
 import { Router, Request, Response } from 'express';
-import bodyParser from 'body-parser';
 import connectDB from '../dbConnect';
-import cors from 'cors';
 import {
   getAllMessages,
+  createMessage,
   getMessageBySenderAndId,
   updateMessage,
   deleteMessage,
@@ -14,8 +11,7 @@ import {
   getMessagesForReceiver
 } from '../controllers/messageController';
 
-// Initialize Express application and router
-//const messageApp = express();
+// Initialize the router
 const router = Router();
 
 // Connect to MongoDB
@@ -28,6 +24,16 @@ router.get('/', async (req: Request, res: Response) => {
   } catch (error) {
     console.error('Error fetching all messages:', error);
     res.status(500).json({ error: 'Failed to fetch messages.' });
+  }
+});
+
+// Create a new message
+router.post('/', async (req: Request, res: Response) => {
+  try {
+    await createMessage(req, res); // Call the controller function to create a new message
+  } catch (error) {
+    console.error('Error creating message:', error);
+    res.status(500).json({ error: 'Failed to create message.' });
   }
 });
 
@@ -82,3 +88,4 @@ router.get('/receiver/:receiverID', async (req: Request, res: Response) => {
 });
 
 export default router;
+
