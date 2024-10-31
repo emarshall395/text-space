@@ -1,3 +1,5 @@
+// Purpose: The purpose of this file is to generate multiple elements of
+// messages into the data base. 
 // createDB/createSample.ts
 import mongoose from 'mongoose';
 import connectDB from '../dbConnect'; // Import the connection module
@@ -6,7 +8,7 @@ import connectDB from '../dbConnect'; // Import the connection module
 const createSampleMessages = async () => {
   await connectDB(); // Connect to MongoDB
 
-  // Define the Message schema
+  // Define the Message schema to follow consistent structure.
   const messageSchema = new mongoose.Schema({
     senderID: { type: String, required: true },
     receiverID: { type: String, required: true },
@@ -45,6 +47,7 @@ const createSampleMessages = async () => {
       },
     ];
 
+    //Saves the messages into the data base.
     const savedMessages = await Message.insertMany(messages);
     console.log('Sample messages created:', savedMessages);
   } catch (error) {
