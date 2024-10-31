@@ -3,7 +3,7 @@
 import messageApp from './routes/messageRoutes';
 import * as dotenv from 'dotenv';
 import connectDB from './dbConnect';
-import app from './App';
+import app from './App.ts';
 
 const app = express();
 
