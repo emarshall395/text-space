@@ -24,6 +24,8 @@ connectDB();
 // Middleware configuration 
 messageApp.use(bodyParser.json());
 messageApp.use(bodyParser.urlencoded({ extended: false }));
+messageApp.use('/api/messages', router);
+
 
 // CORS setup
 messageApp.use(cors()); // Added CORS middleware
