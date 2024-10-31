@@ -4,15 +4,12 @@ import messageApp from './routes/messageRoutes';
 import * as dotenv from 'dotenv';
 import connectDB from './dbConnect';
 import express from 'express';
-import app from './App.ts';
+import app from './App';
 
 const serverApp = express();
-const app = express();
-
-serverApp.use(express.json());
 
 // Middleware
-app.use(express.json());
+serverApp.use(express.json());
 
 // Register routes
 app.use('/api/messages', messageApp);
