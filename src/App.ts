@@ -1,21 +1,26 @@
-// The purpose of this file is to set up and configure the Express application by enabling 
-// middleware (such as CORS and JSON parsing). Additinally, it defines the route structure for the 
-// application. This is a filler used for reference from Professor for server.ts
-// src/App.ts
+// App.ts
+// Holds the main application logic;
+// This file sets up the express application and middleware and
+// routes for sending messages
+
+// sets up imports for express, cors modules and imports 
+// message-related routes from messageRoutes
 import express from 'express';
 import cors from 'cors';
 import messageRoutes from './routes/messageRoutes';
 
+// initializes express app instance
 const app = express();
 
-// Enable CORS for all origins (for Postman testing)
+// enables CORS for routes to allow requests (important for postman testing)
 app.use(cors());
 
-// Middleware configuration
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+// configures middleware to utilize JSON and URL data in requests
+app.use(express.json()); // parses JSON payloads
+app.use(express.urlencoded({ extended: false })); // parses URL data
 
-// Routes
+// sets the route for message-related API calls
 app.use('/api/messages', messageRoutes);
 
+// exports app for use in other files
 export default app;
