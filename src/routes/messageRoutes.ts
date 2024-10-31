@@ -1,3 +1,5 @@
+// Purpose: The purpose of this file is to organizes and defines the specific routes for handling
+// message-related operation. The following file focuses mainly on message end points.
 // src/routes/messageRoutes.ts
 import express, { Request, Response, Router } from 'express';
 import bodyParser from 'body-parser';
