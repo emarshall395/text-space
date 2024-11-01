@@ -15,7 +15,7 @@ dotenv.config();
 const serverApp = express();
 const PORT = process.env.PORT || 5025;
 
-// enables CORS for routes to allow requests (important for postman testing)
+// enables for routes to allow requests (important for postman testing)
 serverApp.use(express.json());
 
 connectDB();
