@@ -1,6 +1,9 @@
 // Start the Express server that will listen for incoming HTTP 
 // requests and route them to the appropriate controllers and database operations
 // src/server.ts
+
+// sets up imports for express, cors modules, and imports 
+// message-related routes from messageRoutes
 import messageApp from './routes/messageRoutes';
 import * as dotenv from 'dotenv';
 import connectDB from './dbConnect';
@@ -8,16 +11,17 @@ import express from 'express';
 
 dotenv.config();
 
+// initializes express app instance
 const serverApp = express();
 const PORT = process.env.PORT || 5025;
 
-// Middleware
+// enables CORS for routes to allow requests (important for postman testing)
 serverApp.use(express.json());
 
 connectDB();
 
 
-// Register routes
+// Register routes to allow requests
 serverApp.use('/api/messages', messageApp);
 
 
